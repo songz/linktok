@@ -1,0 +1,10 @@
+{
+    "require": {
+        "slim/slim": "2.*",
+        "phpmailer/phpmailer": "5.*",
+        "opentok/opentok": "2.2.x"
+    },
+    "require-dev": {
+      "heroku/heroku-buildpack-php": "*"
+    }
+}

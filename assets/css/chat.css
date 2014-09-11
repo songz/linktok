@@ -1,0 +1,92 @@
+#informationContainer{
+  color: #fff;
+  background-color: rgba(0,0,0,0.6);
+  position: fixed;
+  left:20px;
+  bottom:20px;
+  width: 280px;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;  
+  padding: 20px;
+  z-index: 4;
+}
+#publisherContainer{
+  position: fixed;
+  right:20px;
+  bottom:20px;
+  width: 320px;
+  height: 240px;
+  z-index: 3;
+}
+#subscriberContainer{
+  position: fixed;
+  top:0px;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  z-index: 2;
+  background-color: #223;
+}
+#rightContainer{
+  position: fixed;
+  top:0;
+  right:0;
+  bottom:0;
+  left: 400px;
+  background-color: #eee;
+  text-align: center;
+  overflow:auto;
+}
+.top{
+  margin-top: 40px;
+}
+.dateNavigate{
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 36px;
+}
+#dateHeader{
+  text-align: center;
+  display: inline-block;
+}
+.time{
+  text-align: center;
+  background-color: #eee;
+  border-radius: 10px;
+  margin: 15px 20px;
+  padding: 20px;
+  opacity: 0.4;
+}
+.time.selectableTime{
+  cursor: pointer;
+  background-color: #ddd;
+}
+.selectableTime.time.bookedTime{
+  opacity: 1;
+}
+#appointmentTime{
+  font-weight: bold;
+}
+
+#userValueContainer{
+  max-width: 500px;
+  margin: auto;
+  text-align: left;
+  padding: 0 20px 20px 20px;
+}
+.userValue .header{
+  font-weight:bold;
+  margin-right: 10px;
+}
+
+.actionButton{
+  margin-top: 10px;
+}
+
+#stopAppointment{
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+

@@ -1,0 +1,27 @@
+.top{
+  margin-top: 40px;
+}
+.dateNavigate{
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 36px;
+}
+#dateHeader{
+  text-align: center;
+}
+.time{
+  text-align: center;
+  background-color: #eee;
+  border-radius: 10px;
+  margin-top: 15px;
+  padding: 20px;
+  opacity: 0.4;
+}
+.time.selectableTime{
+  opacity: 1;
+  cursor: pointer;
+  background-color: #ddd;
+}
+#appointmentTime{
+  font-weight: bold;
+}
