@@ -89,3 +89,7 @@ $app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey)
   $row['token'] = $opentok->generateToken($row['Sessionid']);
   $app->render('chat.php', $row);
 });
+
+$app->run();
+
+?>
