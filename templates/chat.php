@@ -54,6 +54,7 @@
   var session = OT.initSession(apiKey, session_id);
   session.connect( token, function(err){
     if(!err){ session.publish(publisher); }
+    console.log(session.connection.data==="User1");
   });
   session.on("streamCreated", function(event){
     session.subscribe(event.stream, 'subscriberContainer',  property);

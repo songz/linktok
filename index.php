@@ -30,7 +30,9 @@ if (!mysqli_query($con,$sql)) {
 mysqli_select_db($con, $dbname);
 $sql="CREATE TABLE IF NOT EXISTS `Rooms` (
   `Name` CHAR(255),
-  `Sessionid` CHAR(255))";
+  `Sessionid` CHAR(255),
+  `User2` CHAR(255),
+  `User1` CHAR(255))";
 if (!mysqli_query($con,$sql)) {
   echo "Error creating table: " . mysqli_error($con);
 }
@@ -55,11 +57,19 @@ $app = new \Slim\Slim(array(
   'templates.path' => './templates'
 ));
 
+// variables
+$date = new DateTime();
+
 // routes
+$app->get('/wat', function () use ($app, $date) {
+  echo $date->getTimestamp();
+});
 $app->get('/', function () use ($app) {
   $app->render('createRoom.php');
 });
-$app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey) {
+$app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey, $date) {
+  $roomAvailable = false;
+  $userPos = 'User1';
   $sql = "SELECT * FROM Rooms WHERE Name='$roomname'";
   $result = mysqli_query($con, $sql);
   if (!$result) {
@@ -74,8 +84,9 @@ $app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey)
     // escape variables for security
     $roomname = mysqli_real_escape_string($con, $roomname);
     $sessionId = mysqli_real_escape_string($con, $sessionId);
+    $currentTime = $date->getTimestamp();
 
-    $sql = "INSERT INTO Rooms (Name, Sessionid) VALUES ('$roomname', '$sessionId')";
+    $sql = "INSERT INTO Rooms (Name, Sessionid, User1) VALUES ('$roomname', '$sessionId', '$currentTime')";
     if (!mysqli_query($con,$sql)) {
       die('Error: ' . mysqli_error($con));
     }
@@ -83,11 +94,27 @@ $app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey)
     $row = array();
     $row['Name'] = $roomname;
     $row['Sessionid'] = $sessionId;
+    $roomAvailable = true;
+  }else{
+    if(intval($date->getTimestamp() - intval($row['User1'])) > 180){
+      // user1 has not been in the room for > 180 seconds
+      $roomAvailable = true;
+    }elseif(intval($date->getTimestamp() - intval($row['User2'])) > 180){
+      $user = 'User2';
+      $roomAvailable = true;
+    }
   }
-  $row['apiKey'] = $apiKey;
-  $row['roomname'] = $roomname;
-  $row['token'] = $opentok->generateToken($row['Sessionid']);
-  $app->render('chat.php', $row);
+  if($roomAvailable){
+    $row['apiKey'] = $apiKey;
+    $row['roomname'] = $roomname;
+    $row['token'] = $opentok->generateToken($row['Sessionid'], array(
+      'data' => $userPos
+    ));
+
+    $app->render('chat.php', $row);
+  }else{
+    echo "Room is full at the moment. Please try again in a few minutes";
+  }
 });
 
 $app->run();
