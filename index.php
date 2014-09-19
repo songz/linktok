@@ -61,11 +61,22 @@ $app = new \Slim\Slim(array(
 $date = new DateTime();
 
 // routes
-$app->get('/wat', function () use ($app, $date) {
-  echo $date->getTimestamp();
-});
 $app->get('/', function () use ($app) {
   $app->render('createRoom.php');
+});
+$app->post('/:sessionId', function ($sessionId) use ($app, $con, $date) {
+  $userType = $app->request->post("userType");
+  echo $userType;
+  $currentTime = $date->getTimestamp();
+  if($userType == "User1"){
+    $sql = "UPDATE ROOMS SET User1='$currentTime' WHERE Sessionid='$sessionId'";
+  }else{
+    $sql = "UPDATE ROOMS SET User2='$currentTime' WHERE Sessionid='$sessionId'";
+  }
+  if (!mysqli_query($con,$sql)) {
+    die('Error: ' . mysqli_error($con));
+  }
+  echo 'success updating '.$userType;
 });
 $app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey, $date) {
   $roomAvailable = false;
@@ -96,11 +107,11 @@ $app->get('/:roomname', function ($roomname) use ($app, $con, $opentok, $apiKey,
     $row['Sessionid'] = $sessionId;
     $roomAvailable = true;
   }else{
-    if(intval($date->getTimestamp() - intval($row['User1'])) > 180){
+    if(intval($date->getTimestamp()) - intval($row['User1']) > 60){
       // user1 has not been in the room for > 180 seconds
       $roomAvailable = true;
-    }elseif(intval($date->getTimestamp() - intval($row['User2'])) > 180){
-      $user = 'User2';
+    }elseif(intval($date->getTimestamp()) - intval($row['User2']) > 60){
+      $userPos = 'User2';
       $roomAvailable = true;
     }
   }

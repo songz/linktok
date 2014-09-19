@@ -46,6 +46,7 @@
 <!-- ********** -->
 
 <script>
+  var userType;
   var apiKey = "<?php echo($this->data['apiKey']); ?>";
   var session_id = "<?php echo($this->data['Sessionid']); ?>";
   var token = "<?php echo($this->data['token']); ?>";
@@ -54,7 +55,7 @@
   var session = OT.initSession(apiKey, session_id);
   session.connect( token, function(err){
     if(!err){ session.publish(publisher); }
-    console.log(session.connection.data==="User1");
+      userType = session.connection.data;
   });
   session.on("streamCreated", function(event){
     session.subscribe(event.stream, 'subscriberContainer',  property);
@@ -62,6 +63,20 @@
   session.connect(token, function(err){
     if(!err){ session.publish(publisher); }
   });
+
+  function sendHeartbeat(){
+    $.post("/index.php/"+session_id,{userType: userType},function(res){
+      heartBeatTimeout();
+    });
+  }
+
+  function heartBeatTimeout(){
+    window.setTimeout(function(){
+      sendHeartbeat();
+    }, 1000);
+  }
+  heartBeatTimeout();
+
 </script>
 </body>
 </html>
